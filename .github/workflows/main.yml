@@ -26,7 +26,6 @@ jobs:
           for item in root.findall("./channel/item")[:5]:
               title = item.findtext("title")
               link = item.findtext("link")
-
               print("\nTITLE:", title)
               print("LINK:", link)
           PY
