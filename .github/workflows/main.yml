@@ -17,44 +17,28 @@ jobs:
           import xml.etree.ElementTree as ET
           import urllib.parse
 
-          districts = [
-              "Pratapgarh", "Agra", "Aligarh", "Ambedkar Nagar",
-              "Amroha", "Auraiya", "Ayodhya", "Azamgarh",
-              "Baghpat", "Bahraich", "Ballia", "Balrampur",
-              "Banda", "Barabanki", "Bareilly", "Basti",
-              "Bhadohi", "Bijnor", "Budaun", "Bulandshahr",
-              "Chandauli", "Chitrakoot", "Deoria", "Etah",
-              "Etawah", "Farrukhabad", "Fatehpur", "Firozabad",
-              "Gautam Buddha Nagar", "Ghaziabad", "Ghazipur",
-              "Gonda", "Gorakhpur", "Hamirpur", "Hapur",
-              "Hardoi", "Hathras", "Jalaun", "Jaunpur",
-              "Jhansi", "Kannauj", "Kanpur Dehat", "Kanpur Nagar",
-              "Kasganj", "Kaushambi", "Kushinagar", "Lakhimpur Kheri",
-              "Lalitpur", "Lucknow", "Maharajganj", "Mahoba",
-              "Mainpuri", "Mathura", "Mau", "Meerut",
-              "Mirzapur", "Moradabad", "Muzaffarnagar", "Pilibhit",
-              "Prayagraj", "Raebareli", "Rampur", "Saharanpur",
-              "Sambhal", "Sant Kabir Nagar", "Shahjahanpur",
-              "Shamli", "Shravasti", "Siddharthnagar", "Sitapur",
-              "Sonbhadra", "Sultanpur", "Unnao", "Varanasi"
-          ]
+          feeds = {
+              "PRATAPGARH": "Pratapgarh Uttar Pradesh",
+              "UTTAR PRADESH": "Uttar Pradesh",
+              "INDIA": "India",
+              "INTERNATIONAL": "World International"
+          }
 
-          print("======================================")
-          print("UP DISTRICT NEWS TEST")
-          print("======================================")
+          all_news = []
 
-          for district in districts[:5]:
-              query = urllib.parse.quote(
-                  district + " Uttar Pradesh when:1d"
-              )
+          for category, query in feeds.items():
+
+              print("\n================================")
+              print(category)
+              print("================================")
+
+              encoded = urllib.parse.quote(query + " when:1d")
 
               url = (
                   "https://news.google.com/rss/search?q="
-                  + query
+                  + encoded
                   + "&hl=hi&gl=IN&ceid=IN%3Ahi"
               )
-
-              print("\n\n###", district, "###")
 
               try:
                   data = urllib.request.urlopen(
@@ -63,12 +47,24 @@ jobs:
 
                   root = ET.fromstring(data)
 
-                  for item in root.findall("./channel/item")[:3]:
-                      print("TITLE:", item.findtext("title"))
-                      print("LINK:", item.findtext("link"))
+                  for item in root.findall("./channel/item")[:10]:
+
+                      title = item.findtext("title", "")
+                      link = item.findtext("link", "")
+                      source = item.findtext("source", "")
+
+                      print("\nTITLE:", title)
+                      print("SOURCE:", source)
+                      print("LINK:", link)
+
+                      all_news.append(
+                          (category, title, source, link)
+                      )
 
               except Exception as e:
-                  print("ERROR:", e)
+                  print("ERROR:", category, e)
 
-          print("\nTEST COMPLETE")
+          print("\n================================")
+          print("TOTAL NEWS:", len(all_news))
+          print("================================")
           PY
