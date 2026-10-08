@@ -6,11 +6,26 @@ on:
   workflow_dispatch:
 
 jobs:
-  test:
+  news:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Automation Test
+      - name: Get latest news
         run: |
-          echo "FB News Automation is working!"
-          echo "Time: $(date)"
+          python - <<'PY'
+          import urllib.request
+          import xml.etree.ElementTree as ET
+
+          url = "https://news.google.com/rss/search?q=India%20news&hl=en-IN&gl=IN&ceid=IN:en"
+
+          data = urllib.request.urlopen(url, timeout=20).read()
+          root = ET.fromstring(data)
+
+          print("LATEST NEWS:")
+
+          for item in root.findall(".//item")[:5]:
+              title = item.findtext("title")
+              link = item.findtext("link")
+              print("\nTITLE:", title)
+              print("LINK:", link)
+          PY
