@@ -1,0 +1,16 @@
+name: FB News Automation
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Automation Test
+        run: |
+          echo "FB News Automation is working!"
+          echo "Time: $(date)"
