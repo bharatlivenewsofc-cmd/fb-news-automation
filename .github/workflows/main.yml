@@ -11,4 +11,64 @@ jobs:
 
     steps:
       - name: Get latest news
-        run: python -c "import urllib.request, xml.etree.ElementTree as ET; url='https://news.google.com/rss/search?q=Pratapgarh%20Uttar%20Pradesh&hl=hi&gl=IN&ceid=IN%3Ahi'; data=urllib.request.urlopen(url, timeout=20).read(); root=ET.fromstring(data); print('LATEST NEWS:'); [print('\nTITLE:', item.findtext('title'), '\nLINK:', item.findtext('link')) for item in root.findall('./channel/item')[:5]]"
+        run: |
+          python - <<'PY'
+          import urllib.request
+          import xml.etree.ElementTree as ET
+          import urllib.parse
+
+          districts = [
+              "Pratapgarh", "Agra", "Aligarh", "Ambedkar Nagar",
+              "Amroha", "Auraiya", "Ayodhya", "Azamgarh",
+              "Baghpat", "Bahraich", "Ballia", "Balrampur",
+              "Banda", "Barabanki", "Bareilly", "Basti",
+              "Bhadohi", "Bijnor", "Budaun", "Bulandshahr",
+              "Chandauli", "Chitrakoot", "Deoria", "Etah",
+              "Etawah", "Farrukhabad", "Fatehpur", "Firozabad",
+              "Gautam Buddha Nagar", "Ghaziabad", "Ghazipur",
+              "Gonda", "Gorakhpur", "Hamirpur", "Hapur",
+              "Hardoi", "Hathras", "Jalaun", "Jaunpur",
+              "Jhansi", "Kannauj", "Kanpur Dehat", "Kanpur Nagar",
+              "Kasganj", "Kaushambi", "Kushinagar", "Lakhimpur Kheri",
+              "Lalitpur", "Lucknow", "Maharajganj", "Mahoba",
+              "Mainpuri", "Mathura", "Mau", "Meerut",
+              "Mirzapur", "Moradabad", "Muzaffarnagar", "Pilibhit",
+              "Prayagraj", "Raebareli", "Rampur", "Saharanpur",
+              "Sambhal", "Sant Kabir Nagar", "Shahjahanpur",
+              "Shamli", "Shravasti", "Siddharthnagar", "Sitapur",
+              "Sonbhadra", "Sultanpur", "Unnao", "Varanasi"
+          ]
+
+          print("======================================")
+          print("UP DISTRICT NEWS TEST")
+          print("======================================")
+
+          for district in districts[:5]:
+              query = urllib.parse.quote(
+                  district + " Uttar Pradesh when:1d"
+              )
+
+              url = (
+                  "https://news.google.com/rss/search?q="
+                  + query
+                  + "&hl=hi&gl=IN&ceid=IN%3Ahi"
+              )
+
+              print("\n\n###", district, "###")
+
+              try:
+                  data = urllib.request.urlopen(
+                      url, timeout=20
+                  ).read()
+
+                  root = ET.fromstring(data)
+
+                  for item in root.findall("./channel/item")[:3]:
+                      print("TITLE:", item.findtext("title"))
+                      print("LINK:", item.findtext("link"))
+
+              except Exception as e:
+                  print("ERROR:", e)
+
+          print("\nTEST COMPLETE")
+          PY
