@@ -16,7 +16,7 @@ jobs:
           import urllib.request
           import xml.etree.ElementTree as ET
 
-          url = "https://news.google.com/rss/search?q=India%20news&hl=en-IN&gl=IN&ceid=IN:en"
+        url = "https://news.google.com/rss/search?q=Pratapgarh%20Uttar%20Pradesh&hl=hi&gl=IN&ceid=IN:hi"
 
           data = urllib.request.urlopen(url, timeout=20).read()
           root = ET.fromstring(data)
